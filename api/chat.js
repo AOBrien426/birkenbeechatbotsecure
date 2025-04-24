@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
   if (!embedData.data || !embedData.data[0]) {
     console.error("No embedding returned");
-    return res.status(500).json({ reply: "Sorry, I couldn't process your question." });
+    return res.status(500).json({ reply: "Sorry, I couldn't process your question. Please be more specific." });
   }
 
   const queryEmbedding = embedData.data[0].embedding;
