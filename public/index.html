@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Birken Helper Bee 🐝</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f6f0; padding: 20px; max-width: 800px; margin: auto; }
+    #chatbox { border: 1px solid #ddd; padding: 20px; height: 400px; overflow-y: auto; background: white; }
+    .message { margin: 10px 0; }
+    .user { color: #333; font-weight: bold; }
+    .bot { color: #5b3e00; background: #fffbe6; padding: 8px; border-radius: 6px; }
+    #inputArea { margin-top: 15px; display: flex; gap: 10px; }
+    input, button { padding: 10px; font-size: 1em; }
+    button { background-color: #ffc107; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #e0a800; }
+  </style>
+</head>
+<body>
+  <h1>The Birken Helper Bee 🐝</h1>
+  <p style="background: #fff8d1; padding: 12px; border-left: 6px solid #ffc107; border-radius: 8px;">
+    👋 Welcome! I'm here to help you with anything related to your training materials.<br>
+    Ask a question below — I'll answer using the knowledge base uploaded to the hive.
+  </p>
+
+  <div id="chatbox"></div>
+  <div id="inputArea">
+    <input type="text" id="userInput" placeholder="Ask a training question..." style="flex: 1;">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const input = document.getElementById('userInput');
+
+    async function sendMessage() {
+      const question = input.value.trim();
+      if (!question) return;
+
+      appendMessage('You', question, 'user');
+      input.value = '';
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+
+      const data = await response.json();
+      const reply = data.reply || 'Oops! Something went wrong.';
+      appendMessage('Birken Bee 🐝', reply, 'bot');
+    }
+
+    function appendMessage(sender, text, className) {
+      const div = document.createElement('div');
+      div.className = `message ${className}`;
+      div.innerHTML = `<strong>${sender}:</strong><br>${text}`;
+      chatbox.appendChild(div);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
